@@ -9,8 +9,7 @@ st.title("✨ Text summarizer")
 st.caption("Turn a long passage into a useful summary and key takeaways.")
 
 api_key = os.getenv("GEMINI_API_KEY", "").strip()
-model = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
-fallback_model = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-3.6-flash")
+model = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")fallback_model = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-3.5-flash-lite")
 
 
 def generate_with_fallback(client, prompt):
