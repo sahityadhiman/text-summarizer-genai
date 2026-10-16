@@ -51,8 +51,8 @@ Gemini is asked to preserve names, numbers, and qualifications and not add facts
 ### ⬇️ Downloadable Result
 Download the summary and takeaways as `summary.md`.
 
-### 🔐 Bring Your Own Gemini Key
-Enter a Gemini API key in the sidebar, or configure a server key for a private deployment. The public demo currently asks each visitor for their own key.
+### 🔐 Server-Managed Gemini Access
+The app reads `GEMINI_API_KEY` from its private host environment. Visitors never enter or see an API key in the app.
 
 ## 🧪 Current Prototype
 
@@ -124,25 +124,27 @@ export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
 streamlit run app.py
 ~~~~
 
-You can also paste your key into the app’s password field in the sidebar instead of setting an environment variable. Never commit a real API key to GitHub.
+Set `GEMINI_API_KEY` in your local environment before starting the app. The app intentionally has no API-key entry field. Never commit a real API key to GitHub.
 
 ## ⚙️ Configuration
 
 | Variable | Required | Default | Purpose |
 |---|---:|---|---|
-| `GEMINI_API_KEY` | No, if entered in the sidebar | — | Gemini API key used by the app. A server-configured key is shared by all visitors. |
+| `GEMINI_API_KEY` | Yes | — | Gemini API key, set in Render's private environment or your local shell. All visitors to the public app share the configured key's quota. |
 | `GEMINI_MODEL` | No | `gemini-3.8-flash` | Gemini model name passed to the SDK. |
+| `GEMINI_FALLBACK_MODEL` | No | `gemini-3.6-flash` | Tried automatically if the primary model returns a temporary overload or rate-limit error. |
 
 ## ☁️ Deploy on Render
 
 This repository includes a Render Blueprint in `render.yaml`. Create a Blueprint in Render and connect this GitHub repository; Render reads the Blueprint to install the pinned dependencies and start Streamlit.
 
-The public demo is deployed on Render’s free web service. Free services can sleep while idle, so the first visit after inactivity may take about a minute to load. The demo does not have a shared Gemini key configured; visitors enter their own key in the sidebar.
+The public demo is deployed on Render’s free web service with `GEMINI_API_KEY` stored as a private environment variable. Visitors can summarize text without entering a key. All visitors share the app owner's Gemini quota. Render free services can sleep while idle, so the first visit after inactivity may take about a minute to load.
 
 ## 🔒 Privacy and Limitations
 
 - The source text and optional focus are sent to Google Gemini when a summary is generated.
-- A key entered in the public app is sent to the app server for the Gemini request. Use a key only with a deployment you trust.
+- The public app sends source text to Google Gemini using the server-managed key. All visitors share its quota; the key itself is not exposed in the page or repository.
+- Local runs also require `GEMINI_API_KEY` to be supplied through the shell environment; the app does not accept keys in the UI.
 - Gemini can omit details or produce incorrect summaries even when asked to stay within the source. Check important facts against the original passage.
 - Do not paste confidential, personal, or sensitive information into the public demo.
 - This is a lightweight text prototype; it has no file upload, user accounts, or persistent history.
